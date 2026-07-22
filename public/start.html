@@ -28,6 +28,8 @@
     <meta property="og:url" content="https://crescaos.com/start">
     <meta property="og:title" content="Start Here | Roberto Alas & Cresca OS">
     <meta property="og:description" content="Access business automation, cleaning, sales training, websites, consulting, and project examples in one place.">
+    <!-- TODO: Replace og:image with a founder-led social card — "Roberto Alas — Systems for Service Businesses"
+         (Cresca OS branding, photo of Roberto, 1200x630). Current logo image kept until the new asset is ready. -->
     <meta property="og:image" content="https://crescaos.com/logo-preview.png">
 
     <!-- Twitter -->
@@ -48,7 +50,7 @@
                 outline-offset: 4px;
             }
         }
-        
+
         .signature-texture {
             background: linear-gradient(135deg, #0A84FF 0%, #00E68A 100%);
         }
@@ -61,7 +63,17 @@
             box-shadow: 0 0 20px rgba(0, 230, 138, 0.2);
             border-color: rgba(0, 230, 138, 0.3);
         }
-        
+
+        /* Icon-font guard: hide raw ligature text (e.g. "settings_suggest") until the icon font is confirmed loaded */
+        .material-symbols-outlined { visibility: hidden; }
+        .icons-ready .material-symbols-outlined { visibility: visible; }
+
+        /* Brief highlight when a segmentation button routes to a card */
+        .card-highlight {
+            box-shadow: 0 0 0 2px rgba(0, 230, 138, 0.6), 0 0 24px rgba(0, 230, 138, 0.25);
+            transition: box-shadow 0.3s ease;
+        }
+
         #neural-bg {
             position: fixed;
             top: 0;
@@ -129,7 +141,7 @@
             </a>
             <div>
                 <a href="/es/start" data-lang-switch="es" class="flex items-center gap-1 text-[#00E68A] font-label text-xs hover:text-[#dae2fd] transition-colors font-bold border border-[#00E68A]/30 rounded-full px-3 py-1.5 bg-[#00E68A]/5">
-                    <span class="material-symbols-outlined text-[16px]">language</span> ES
+                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">language</span> ES
                 </a>
             </div>
         </div>
@@ -139,17 +151,22 @@
     <main class="flex-1 w-full max-w-2xl mx-auto px-5 pt-24 pb-16 relative z-10">
         <!-- Hero Section -->
         <header class="text-center py-8 md:py-12">
-            <!-- Avatar/Logo Icon -->
+            <!-- Avatar/Logo Icon (brand SVG — no icon-font dependency, prevents raw "token" text flash) -->
             <div class="w-16 h-16 mx-auto mb-6 rounded-2xl signature-texture p-0.5 shadow-lg shadow-primary/25 flex items-center justify-center">
                 <div class="w-full h-full bg-[#0F172A] rounded-2xl flex items-center justify-center">
-                    <span class="material-symbols-outlined text-white text-3xl">token</span>
+                    <svg class="w-9 h-9" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <circle cx="24" cy="24" r="18" stroke="#0A84FF" stroke-width="3"></circle>
+                        <ellipse cx="24" cy="24" rx="13" ry="7.5" stroke="#00E68A" stroke-width="3" transform="rotate(60 24 24)"></ellipse>
+                        <ellipse cx="24" cy="24" rx="13" ry="7.5" stroke="#00E68A" stroke-width="3" transform="rotate(-60 24 24)"></ellipse>
+                        <circle cx="24" cy="24" fill="#FFFFFF" r="3.5"></circle>
+                    </svg>
                 </div>
             </div>
-            
+
             <h1 class="font-headline text-3xl sm:text-4xl font-bold text-white leading-tight tracking-tight mb-4">
                 Build Systems. Book More.<br><span class="text-brand-green italic">Scale Smarter.</span>
             </h1>
-            
+
             <p class="font-body text-base text-on-surface-variant max-w-md mx-auto mb-3 leading-relaxed font-light">
                 Choose the service that fits what you need — business automation, cleaning services, sales training, websites, or consulting.
             </p>
@@ -157,14 +174,19 @@
             <p class="font-body text-xs text-[#00E68A] max-w-md mx-auto mb-4 font-semibold">
                 For business owners, sales teams, founders, and homeowners looking for systems, services, or support.
             </p>
-            
-            <p class="font-label text-[11px] uppercase tracking-wider text-[#8f9095] max-w-xs mx-auto mb-8 leading-relaxed">
+
+            <p class="font-label text-[11px] uppercase tracking-wider text-[#8f9095] max-w-xs mx-auto mb-4 leading-relaxed">
                 Built by Roberto Alas — founder of Cresca OS, creator of SeptiVolt, and operator of service-business growth systems.
+            </p>
+
+            <!-- Proof Line -->
+            <p class="font-body text-sm text-white/90 max-w-md mx-auto mb-8 leading-relaxed inline-block border border-brand-green/20 bg-brand-green/5 rounded-full px-5 py-2">
+                <span class="text-brand-green font-semibold">20+ systems built</span> across solar, cleaning, home services, CRM, automation, websites, and sales training.
             </p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center w-full px-2 mb-10">
                 <a class="signature-texture text-white px-8 py-3.5 rounded-xl font-label font-bold tracking-wider text-xs uppercase shadow-lg shadow-brand-green/15 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 w-full sm:w-auto text-center" href="/diagnostic?source=start-page&service=audit">
-                    Book a Business Audit
+                    Revenue Leakage Audit
                 </a>
                 <a class="bg-surface-container-high border border-outline-variant/30 text-white px-8 py-3.5 rounded-xl font-label font-bold tracking-wider text-xs uppercase hover:bg-surface-bright hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 w-full sm:w-auto text-center" href="#services">
                     View All Services
@@ -172,51 +194,58 @@
             </div>
         </header>
 
-        <!-- Service Cards Section -->
+        <!-- Self-Segmentation Router -->
+        <section aria-labelledby="segment-heading" class="mb-12">
+            <h2 id="segment-heading" class="font-headline text-xl sm:text-2xl font-bold text-white text-center mb-2">What brings you here?</h2>
+            <p class="font-body text-sm text-[#c6c6cb] text-center mb-6 font-light max-w-md mx-auto">
+                Choose the path that fits what you need and I’ll point you to the right next step.
+            </p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <button type="button" data-segment="business-systems" data-target="card-cresca-os"
+                        class="bg-surface-container-high border border-outline-variant/30 text-white px-4 py-2.5 rounded-xl font-label text-xs font-bold uppercase tracking-wider hover:bg-surface-bright hover:border-brand-green/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary transition-all cursor-pointer">
+                    I need business systems / automation
+                </button>
+                <button type="button" data-segment="sales-training" data-target="card-septivolt"
+                        class="bg-surface-container-high border border-outline-variant/30 text-white px-4 py-2.5 rounded-xl font-label text-xs font-bold uppercase tracking-wider hover:bg-surface-bright hover:border-brand-green/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary transition-all cursor-pointer">
+                    I need sales training
+                </button>
+                <button type="button" data-segment="custom-build" data-target="card-custom-build"
+                        class="bg-surface-container-high border border-outline-variant/30 text-white px-4 py-2.5 rounded-xl font-label text-xs font-bold uppercase tracking-wider hover:bg-surface-bright hover:border-brand-green/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary transition-all cursor-pointer">
+                    I need a website or custom build
+                </button>
+                <button type="button" data-segment="cleaning" data-target="card-gg-cleaning"
+                        class="bg-surface-container-high border border-outline-variant/30 text-white px-4 py-2.5 rounded-xl font-label text-xs font-bold uppercase tracking-wider hover:bg-surface-bright hover:border-brand-green/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary transition-all cursor-pointer">
+                    I need cleaning services
+                </button>
+                <button type="button" data-segment="coaching" data-target="card-life-architect"
+                        class="bg-surface-container-high border border-outline-variant/30 text-white px-4 py-2.5 rounded-xl font-label text-xs font-bold uppercase tracking-wider hover:bg-surface-bright hover:border-brand-green/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary transition-all cursor-pointer">
+                    I want personal coaching
+                </button>
+            </div>
+        </section>
+
+        <!-- Service Cards Section (ordered by revenue & strategic priority) -->
         <section id="services" class="space-y-4 md:space-y-6 scroll-mt-20">
 
-            <!-- Card 0: Life Architect — Personal Brand Portal -->
-            <a href="/life-architect" 
-               data-service="life-architect" 
-               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group relative overflow-hidden"
-               style="border: 1px solid rgba(201, 168, 76, 0.15);">
-                <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(rgba(201,168,76,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,0.3) 1px, transparent 1px); background-size: 40px 40px;"></div>
-                <div class="flex items-start gap-4 relative z-10">
-                    <div class="p-3 rounded-xl" style="background: rgba(201, 168, 76, 0.1); color: #C9A84C;">
-                        <span class="material-symbols-outlined text-2xl">architecture</span>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h2 class="font-headline text-lg font-bold text-white transition-colors flex items-center gap-1.5" style="group-hover:color: #C9A84C;">
-                            Roberto Alas — Life Architect
-                        </h2>
-                        <p class="font-body text-sm mt-1 mb-4 leading-relaxed font-light italic" style="color: #C9A84C;">
-                            Built by Design. Not by Default.
-                        </p>
-                        <p class="font-body text-sm text-[#c6c6cb] mb-4 leading-relaxed font-light">
-                            Mindset, discipline, communication, sales, systems, and self-mastery — for ambitious men and entrepreneurs building their life with intention.
-                        </p>
-                        <span class="inline-flex items-center gap-1 font-label text-[10px] font-bold uppercase tracking-widest rounded-full px-3 py-1" style="color: #C9A84C; background: rgba(201, 168, 76, 0.05); border: 1px solid rgba(201, 168, 76, 0.2);">
-                            Explore Life Architecture &rarr;
-                        </span>
-                    </div>
-                </div>
-            </a>
-            
             <!-- Card 1: Cresca OS -->
-            <a href="/diagnostic?source=start-page&service=cresca-os" 
-               data-service="cresca-os" 
-               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group">
+            <a href="/diagnostic?source=start-page&service=cresca-os"
+               id="card-cresca-os"
+               data-service="cresca-os"
+               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group scroll-mt-24">
                 <div class="flex items-start gap-4">
                     <div class="p-3 bg-[#0A84FF]/10 rounded-xl text-[#0A84FF] group-hover:bg-[#0A84FF]/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl">settings_suggest</span>
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">settings_suggest</span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-[#0A84FF] transition-colors flex items-center gap-1.5">
+                        <p class="font-label text-[10px] font-bold uppercase tracking-widest text-[#0A84FF] mb-1 flex items-center gap-1.5">
                             Cresca OS — Revenue Infrastructure
-                            <span class="material-symbols-outlined text-sm text-[#00E68A] animate-pulse">check_circle</span>
+                            <span class="material-symbols-outlined text-sm text-[#00E68A] animate-pulse" aria-hidden="true">check_circle</span>
+                        </p>
+                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-[#0A84FF] transition-colors">
+                            Stop losing leads you already paid for.
                         </h2>
                         <p class="font-body text-sm text-[#c6c6cb] mt-2 mb-4 leading-relaxed font-light">
-                            For business owners who need better lead capture, faster follow-up, CRM automation, appointment booking, and full pipeline visibility.
+                            Lead capture, fast follow-up, CRM automation, appointment booking, and full pipeline visibility — so every opportunity gets worked, not wasted.
                         </p>
                         <span class="inline-flex items-center gap-1 font-label text-[10px] font-bold text-brand-green uppercase tracking-widest bg-brand-green/5 border border-brand-green/20 rounded-full px-3 py-1">
                             Book Your Revenue Leakage Audit &rarr;
@@ -225,48 +254,27 @@
                 </div>
             </a>
 
-            <!-- Card 2: G&G Cleaning -->
-            <a href="https://ggcleaningli.com?utm_source=cresca_start&utm_medium=link_hub&utm_campaign=roberto_services" 
-               data-service="gg-cleaning" 
-               target="_blank" 
+            <!-- Card 2: SeptiVolt -->
+            <a href="https://septivolt.com?utm_source=cresca_start&utm_medium=link_hub&utm_campaign=roberto_services"
+               id="card-septivolt"
+               data-service="septivolt"
+               target="_blank"
                rel="noopener"
-               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group">
-                <div class="flex items-start gap-4">
-                    <div class="p-3 bg-[#00E68A]/10 rounded-xl text-[#00E68A] group-hover:bg-[#00E68A]/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl">cleaning_services</span>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-brand-green transition-colors flex items-center gap-1">
-                            G&G Cleaning Services — Long Island
-                            <span class="material-symbols-outlined text-sm opacity-55">open_in_new</span>
-                        </h2>
-                        <p class="font-body text-sm text-[#c6c6cb] mt-2 mb-4 leading-relaxed font-light">
-                            Residential, commercial, deep cleaning, move-in/move-out, and post-construction cleaning services across Nassau and Suffolk County.
-                        </p>
-                        <span class="inline-flex items-center gap-1 font-label text-[10px] font-bold text-[#0A84FF] uppercase tracking-widest bg-[#0A84FF]/5 border border-[#0A84FF]/20 rounded-full px-3 py-1">
-                            Get a Cleaning Quote &rarr;
-                        </span>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Card 3: SeptiVolt -->
-            <a href="https://septivolt.com?utm_source=cresca_start&utm_medium=link_hub&utm_campaign=roberto_services" 
-               data-service="septivolt" 
-               target="_blank" 
-               rel="noopener"
-               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group">
+               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group scroll-mt-24">
                 <div class="flex items-start gap-4">
                     <div class="p-3 bg-[#0A84FF]/10 rounded-xl text-[#0A84FF] group-hover:bg-[#0A84FF]/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl">interactive_space</span>
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">interactive_space</span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-[#0A84FF] transition-colors flex items-center gap-1">
+                        <p class="font-label text-[10px] font-bold uppercase tracking-widest text-[#0A84FF] mb-1 flex items-center gap-1">
                             SeptiVolt — Solar & Home Sales Training
-                            <span class="material-symbols-outlined text-sm opacity-55">open_in_new</span>
+                            <span class="material-symbols-outlined text-sm opacity-55" aria-hidden="true">open_in_new</span>
+                        </p>
+                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-[#0A84FF] transition-colors">
+                            Train sales reps faster with AI-powered roleplay and scoring.
                         </h2>
                         <p class="font-body text-sm text-[#c6c6cb] mt-2 mb-4 leading-relaxed font-light">
-                            AI-powered onboarding, roleplay simulation, sales training, rep scoring, and manager visibility for solar and home-service sales teams.
+                            Onboarding, roleplay simulations, rep scoring, and manager visibility for solar and home-service sales teams.
                         </p>
                         <span class="inline-flex items-center gap-1 font-label text-[10px] font-bold text-brand-green uppercase tracking-widest bg-brand-green/5 border border-brand-green/20 rounded-full px-3 py-1">
                             Book a SeptiVolt Demo &rarr;
@@ -275,20 +283,24 @@
                 </div>
             </a>
 
-            <!-- Card 4: Custom Websites + AI Automation -->
-            <a href="/custom-build" 
-               data-service="custom-build" 
-               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group">
+            <!-- Card 3: Custom Websites + AI Automation -->
+            <a href="/custom-build"
+               id="card-custom-build"
+               data-service="custom-build"
+               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group scroll-mt-24">
                 <div class="flex items-start gap-4">
                     <div class="p-3 bg-[#00E68A]/10 rounded-xl text-[#00E68A] group-hover:bg-[#00E68A]/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl">hub</span>
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">hub</span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-brand-green transition-colors">
+                        <p class="font-label text-[10px] font-bold uppercase tracking-widest text-[#00E68A] mb-1">
                             Custom Websites + AI Automation Systems
+                        </p>
+                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-brand-green transition-colors">
+                            Turn your website, CRM, forms, payments, and automations into one connected system.
                         </h2>
                         <p class="font-body text-sm text-[#c6c6cb] mt-2 mb-4 leading-relaxed font-light">
-                            Need a website, sales funnel, CRM, booking flow, chatbot, Stripe checkout, or custom internal app? I build systems that help businesses capture and close more opportunities.
+                            Websites, sales funnels, chatbots, Stripe checkout, CRM, booking flows, internal tools, and automation — built to capture and close more opportunities.
                         </p>
                         <span class="inline-flex items-center gap-1 font-label text-[10px] font-bold text-[#0A84FF] uppercase tracking-widest bg-[#0A84FF]/5 border border-[#0A84FF]/20 rounded-full px-3 py-1">
                             Request a Custom Build &rarr;
@@ -297,35 +309,69 @@
                 </div>
             </a>
 
-            <!-- Card 5: Work Directly With Roberto -->
-            <a href="/diagnostic?source=start-page&service=consulting" 
-               data-service="consulting" 
-               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group">
+            <!-- Card 4: Work Directly With Roberto -->
+            <a href="/diagnostic?source=start-page&service=consulting"
+               id="card-consulting"
+               data-service="consulting"
+               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group scroll-mt-24">
                 <div class="flex items-start gap-4">
                     <div class="p-3 bg-[#0A84FF]/10 rounded-xl text-[#0A84FF] group-hover:bg-[#0A84FF]/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl">support_agent</span>
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">support_agent</span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-[#0A84FF] transition-colors">
+                        <p class="font-label text-[10px] font-bold uppercase tracking-widest text-[#0A84FF] mb-1">
                             Work Directly With Roberto
+                        </p>
+                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-[#0A84FF] transition-colors">
+                            Get direct help organizing your offer, systems, and sales process.
                         </h2>
                         <p class="font-body text-sm text-[#c6c6cb] mt-2 mb-4 leading-relaxed font-light">
-                            For founders, operators, and service-business owners who need help organizing their offer, systems, sales process, website, or growth strategy.
+                            For founders, operators, and service-business owners who need help with their offer, systems, sales process, website, or growth strategy.
                         </p>
                         <span class="inline-flex items-center gap-1 font-label text-[10px] font-bold text-brand-green uppercase tracking-widest bg-brand-green/5 border border-brand-green/20 rounded-full px-3 py-1">
-                            Book a Strategy Call &rarr;
+                            Revenue Leakage Audit &rarr;
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Card 5: G&G Cleaning -->
+            <a href="https://ggcleaningli.com?utm_source=cresca_start&utm_medium=link_hub&utm_campaign=roberto_services"
+               id="card-gg-cleaning"
+               data-service="gg-cleaning"
+               target="_blank"
+               rel="noopener"
+               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group scroll-mt-24">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 bg-[#00E68A]/10 rounded-xl text-[#00E68A] group-hover:bg-[#00E68A]/20 transition-colors">
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">cleaning_services</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-label text-[10px] font-bold uppercase tracking-widest text-[#00E68A] mb-1 flex items-center gap-1">
+                            G&G Cleaning Services — Long Island
+                            <span class="material-symbols-outlined text-sm opacity-55" aria-hidden="true">open_in_new</span>
+                        </p>
+                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-brand-green transition-colors">
+                            Professional cleaning services for Long Island homes and businesses.
+                        </h2>
+                        <p class="font-body text-sm text-[#c6c6cb] mt-2 mb-4 leading-relaxed font-light">
+                            Residential, commercial, deep cleaning, move-in/move-out, and post-construction cleaning across Nassau and Suffolk County.
+                        </p>
+                        <span class="inline-flex items-center gap-1 font-label text-[10px] font-bold text-[#0A84FF] uppercase tracking-widest bg-[#0A84FF]/5 border border-[#0A84FF]/20 rounded-full px-3 py-1">
+                            Get a Cleaning Quote &rarr;
                         </span>
                     </div>
                 </div>
             </a>
 
             <!-- Card 6: See What I'm Building -->
-            <a href="/projects" 
-               data-service="projects" 
-               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group">
+            <a href="/projects"
+               id="card-projects"
+               data-service="projects"
+               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group scroll-mt-24">
                 <div class="flex items-start gap-4">
                     <div class="p-3 bg-[#00E68A]/10 rounded-xl text-[#00E68A] group-hover:bg-[#00E68A]/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl">deployed_code</span>
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">deployed_code</span>
                     </div>
                     <div class="flex-1 min-w-0">
                         <h2 class="font-headline text-lg font-bold text-white group-hover:text-brand-green transition-colors">
@@ -336,6 +382,37 @@
                         </p>
                         <span class="inline-flex items-center gap-1 font-label text-[10px] font-bold text-[#0A84FF] uppercase tracking-widest bg-[#0A84FF]/5 border border-[#0A84FF]/20 rounded-full px-3 py-1">
                             View Portfolio Projects &rarr;
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Card 7: Life Architect — Personal Growth & Coaching -->
+            <a href="/life-architect"
+               id="card-life-architect"
+               data-service="life-architect"
+               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group relative overflow-hidden scroll-mt-24"
+               style="border: 1px solid rgba(201, 168, 76, 0.15);">
+                <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(rgba(201,168,76,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,0.3) 1px, transparent 1px); background-size: 40px 40px;"></div>
+                <div class="flex items-start gap-4 relative z-10">
+                    <div class="p-3 rounded-xl" style="background: rgba(201, 168, 76, 0.1); color: #C9A84C;">
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">architecture</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-label text-[10px] font-bold uppercase tracking-widest mb-1" style="color: #C9A84C;">
+                            Roberto Alas — Life Architect
+                        </p>
+                        <h2 class="font-headline text-lg font-bold text-white transition-colors">
+                            Personal growth, discipline, communication, and life systems.
+                        </h2>
+                        <p class="font-body text-sm mt-1 mb-2 leading-relaxed font-light italic" style="color: #C9A84C;">
+                            Built by Design. Not by Default.
+                        </p>
+                        <p class="font-body text-sm text-[#c6c6cb] mb-4 leading-relaxed font-light">
+                            Coaching for people who want to rebuild identity, habits, confidence, and execution — with intention, not by default.
+                        </p>
+                        <span class="inline-flex items-center gap-1 font-label text-[10px] font-bold uppercase tracking-widest rounded-full px-3 py-1" style="color: #C9A84C; background: rgba(201, 168, 76, 0.05); border: 1px solid rgba(201, 168, 76, 0.2);">
+                            Explore Life Architecture &rarr;
                         </span>
                     </div>
                 </div>
@@ -354,9 +431,20 @@
                     info@crescaos.com
                 </a>
                 <a class="signature-texture text-white px-6 py-2.5 rounded-xl font-label font-bold text-xs uppercase shadow-md shadow-primary/10 hover:scale-[1.02] transition-all w-full sm:w-auto text-center" href="/diagnostic?source=start-page&service=audit">
-                    Book a Business Audit
+                    Revenue Leakage Audit
                 </a>
             </div>
+        </section>
+
+        <!-- Lead Magnet Section (low-friction capture) -->
+        <section class="mt-8 p-8 rounded-[2rem] border border-[#0A84FF]/15 bg-[#0A84FF]/5 backdrop-blur-md text-center max-w-xl mx-auto">
+            <h3 class="font-headline text-xl font-bold text-white mb-2">Not ready to book yet?</h3>
+            <p class="font-body text-sm text-[#c6c6cb] mb-6 font-light leading-relaxed">
+                Get the free 10-Point Revenue Leak Checklist and see where your business may be losing leads, appointments, and follow-up opportunities.
+            </p>
+            <a data-service="revenue-leak-checklist" class="signature-texture text-white px-8 py-3 rounded-xl font-label font-bold tracking-wider text-xs uppercase shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all inline-block" href="/diagnostic?source=start-page&offer=revenue-leak-checklist&language=en">
+                Get the Free Checklist
+            </a>
         </section>
 
         <!-- Footer Section -->
@@ -364,10 +452,10 @@
             <div class="bg-[#00E68A]/5 border border-[#00E68A]/10 rounded-[2rem] p-8 max-w-xl mx-auto mb-8">
                 <h4 class="font-headline text-xl font-bold text-white mb-2">Not sure where to start?</h4>
                 <p class="font-body text-sm text-[#c6c6cb] mb-6 font-light leading-relaxed">
-                    Start with a quick business audit and I’ll point you to the right system, service, or next step.
+                    Start with a quick audit and I’ll point you to the right system, service, or next step.
                 </p>
                 <a class="signature-texture text-white px-8 py-3 rounded-xl font-label font-bold tracking-wider text-xs uppercase shadow-lg shadow-brand-green/20 hover:scale-[1.02] transition-all inline-block" href="/diagnostic?source=start-page&service=audit">
-                    Book a Business Audit
+                    Revenue Leakage Audit
                 </a>
             </div>
             <p class="text-[11px] font-label text-[#8f9095]">
@@ -379,6 +467,20 @@
     <!-- Scripts -->
     <script src="/js/language-manager.js"></script>
     <script>
+        // Icon-font guard: only reveal Material Symbols once the font is actually loaded,
+        // so raw ligature names ("settings_suggest", "architecture", etc.) never flash as text.
+        (function () {
+            if (document.fonts && document.fonts.load) {
+                document.fonts.load('24px "Material Symbols Outlined"').then(function () {
+                    if (document.fonts.check('24px "Material Symbols Outlined"')) {
+                        document.documentElement.classList.add('icons-ready');
+                    }
+                }).catch(function () { /* icons stay hidden (decorative) if font fails */ });
+            } else {
+                document.documentElement.classList.add('icons-ready');
+            }
+        })();
+
         // Interactive Particle Network Background
         window.addEventListener('DOMContentLoaded', () => {
             const canvas = document.getElementById('neural-bg');
@@ -427,7 +529,7 @@
 
             function animate() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
+
                 for (let i = 0; i < particles.length; i++) {
                     particles[i].update();
                     particles[i].draw();
@@ -451,7 +553,7 @@
             }
             animate();
 
-            // Track Clicks dynamically (for GTM dataLayer integration)
+            // Track card clicks (GTM dataLayer integration)
             const cards = document.querySelectorAll('a[data-service]');
             cards.forEach(card => {
                 card.addEventListener('click', function(e) {
@@ -464,6 +566,32 @@
                             language: "en",
                             page: "start"
                         });
+                    }
+                });
+            });
+
+            // Segmentation router: GTM event + smooth scroll to the matching card
+            const segmentButtons = document.querySelectorAll('button[data-segment]');
+            segmentButtons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const segment = this.getAttribute('data-segment');
+                    const targetId = this.getAttribute('data-target');
+
+                    if (window.dataLayer) {
+                        window.dataLayer.push({
+                            event: "link_hub_segment_click",
+                            segment: segment,
+                            language: "en",
+                            page: "start"
+                        });
+                    }
+
+                    const target = document.getElementById(targetId);
+                    if (target) {
+                        target.scrollIntoView({ behavior: "smooth", block: "center" });
+                        target.classList.add('card-highlight');
+                        setTimeout(() => target.classList.remove('card-highlight'), 1800);
+                        target.focus({ preventScroll: true });
                     }
                 });
             });

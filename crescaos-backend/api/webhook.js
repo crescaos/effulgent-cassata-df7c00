@@ -1,3 +1,8 @@
+/**
+ * LEGACY / NON-PRODUCTION HANDLER
+ * Note: Production `/api/webhook` is owned and handled strictly by `CRESCAOS-WEB-BACKEND/server.js` on Railway.
+ * This Netlify handler is preserved for reference only.
+ */
 const ghl = require('../utils/ghl');
 const logger = require('../utils/logger');
 
@@ -36,6 +41,7 @@ exports.handler = async (event, context) => {
     const isESLead = payload.source === 'El Salvador Intake Form';
     const isAuditWizard = payload.source === 'Growth Audit Wizard' || payload.source === 'Growth Audit Wizard (ES)';
     const isDiagnostic = payload.source === 'Diagnostic Funnel';
+    const isLeadMagnet = payload.offer === 'revenue-leak-checklist' || payload.source === 'Lead Magnet - Revenue Leak Checklist';
     
     // Normalize names from the wizard (full_name) vs the form (firstName/lastName) vs Diagnostic (name)
     let firstName = payload.firstName || '';
@@ -51,7 +57,11 @@ exports.handler = async (event, context) => {
     }
 
     const tags = [];
-    if (isESLead) tags.push('es-lead');
+    if (isLeadMagnet) {
+      // Tag drives the GHL delivery + nurture workflow
+      tags.push('lead-magnet-revenue-leak-checklist', payload.language === 'es' ? 'cresca:lang_es' : 'cresca:lang_en');
+    }
+    else if (isESLead) tags.push('es-lead');
     else if (isDiagnostic) {
       tags.push('cresca:diagnostic_completed', payload.language === 'es' ? 'cresca:lang_es' : 'cresca:lang_en');
       if (payload.service) tags.push(`cresca:service_${payload.service}`);
@@ -72,8 +82,20 @@ exports.handler = async (event, context) => {
 
     // 2. Format detailed note for ES Leads or standard Audit Leads
     let noteContent = `Source: ${payload.source || 'Website Form'}\n`;
-    
-    if (isAuditWizard) {
+
+    if (isLeadMagnet) {
+      noteContent += `--- Lead Magnet ---\n`;
+      noteContent += `Offer: 10-Point Revenue Leak Checklist\n`;
+      noteContent += `Language: ${payload.language || 'en'}\n`;
+      const lmTrack = [];
+      if (payload.utm_source) lmTrack.push(`UTM Source: ${payload.utm_source}`);
+      if (payload.utm_medium) lmTrack.push(`UTM Medium: ${payload.utm_medium}`);
+      if (payload.utm_campaign) lmTrack.push(`UTM Campaign: ${payload.utm_campaign}`);
+      if (payload.source_page) lmTrack.push(`Source Page: ${payload.source_page}`);
+      if (payload.referrer) lmTrack.push(`Referrer: ${payload.referrer}`);
+      if (payload.landing_page) lmTrack.push(`Landing Page: ${payload.landing_page}`);
+      if (lmTrack.length > 0) noteContent += `\n--- Tracking Attribution ---\n` + lmTrack.join('\n') + `\n`;
+    } else if (isAuditWizard) {
       if (payload.website) contactData.customFields.push({ key: 'website', value: payload.website });
       
       // Map to custom fields from environment
@@ -172,7 +194,9 @@ exports.handler = async (event, context) => {
 
       logger.info('Attempting opportunity creation', { contactId, pipelineId, stageId });
 
-      if (contactId && pipelineId) {
+      // Lead magnets stay top-of-funnel: no opportunity in the sales pipeline
+      // until they book (the GHL nurture workflow handles that transition).
+      if (contactId && pipelineId && !isLeadMagnet) {
         try {
           const oppTitle = `${isESLead ? 'ES' : (isAuditWizard ? 'AUDIT' : 'LEAD')}: ${payload.company || payload.full_name || payload.firstName}`;
           const oppValue = isAuditWizard ? (payload.lost_revenue || 0) : 0;

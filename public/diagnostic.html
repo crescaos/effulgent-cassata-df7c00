@@ -217,8 +217,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       source_page: window.location.href,
       referrer: document.referrer || '',
       landing_page: sessionStorage.getItem('landing_page') || window.location.href,
-      service: urlParams.get('service') || ''
+      service: urlParams.get('service') || '',
+      offer: urlParams.get('offer') || ''
     };
+
+    // Lead-magnet mode: /diagnostic?offer=revenue-leak-checklist swaps the funnel
+    // for a short 2-step capture flow (checklist delivery via GHL workflow).
+    const CHECKLIST_MODE = diagnosticState.offer === 'revenue-leak-checklist';
 
     const COPY = {
       bizTypes:[
@@ -422,6 +427,78 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       }
     ];
 
+    // ── Lead Magnet: 10-Point Revenue Leak Checklist (short capture flow) ────────
+    const CHECKLIST_STEPS = [
+      ()=> fCard(`
+        ${fEyebrow('Free Download — 10-Point Revenue Leak Checklist')}
+        ${fH2('Find out where your business is leaking revenue.')}
+        ${fSub('10 quick checks across lead capture, follow-up, and booking. See where leads, appointments, and follow-up opportunities are slipping through — in under 5 minutes.')}
+        <button onclick="goTo(2)" class="w-full mt-6 signature-texture text-white font-label font-bold py-4 rounded-xl text-sm uppercase tracking-widest hover:scale-[1.02] transition-transform shadow-lg shadow-primary/20">Get the Free Checklist &rarr;</button>
+        <p class="text-center text-xs text-on-surface-variant mt-3 opacity-70">Free. No sales call required.</p>`),
+
+      ()=> fCard(`
+        ${fEyebrow('Almost there')}
+        ${fH2('Where should we send your checklist?')}
+        <div class="space-y-4">
+          <input id="lm-name" type="text" placeholder="Your name" required
+            class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline-variant/20 px-0 py-3 text-white placeholder:text-outline focus:border-primary outline-none transition-colors"/>
+          <input id="lm-email" type="email" placeholder="Email address" required
+            class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline-variant/20 px-0 py-3 text-white placeholder:text-outline focus:border-primary outline-none transition-colors"/>
+          <input id="lm-phone" type="tel" placeholder="Phone number (optional)"
+            class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline-variant/20 px-0 py-3 text-white placeholder:text-outline focus:border-primary outline-none transition-colors"/>
+        </div>
+        <button onclick="checklistSubmit()" class="w-full mt-6 signature-texture text-white font-label font-bold py-4 rounded-xl text-sm uppercase tracking-widest hover:scale-[1.02] transition-transform shadow-lg shadow-primary/20">Send Me the Checklist &rarr;</button>`),
+
+      ()=> fCard(`
+        ${fEyebrow('You\'re all set')}
+        ${fH2('Your checklist is on its way.')}
+        ${fSub('Check your inbox in the next few minutes (and your spam folder, just in case). While you wait — want to see exactly how much revenue your business is leaking, and what to fix first?')}
+        <button onclick="goTo(4)" class="w-full mt-2 signature-texture text-white font-label font-bold py-4 rounded-xl text-sm uppercase tracking-widest hover:scale-[1.02] transition-transform shadow-lg shadow-primary/20">Book Your Revenue Leakage Audit &rarr;</button>
+        <div class="flex justify-center gap-6 mt-4 text-xs text-on-surface-variant">
+          <span>✓ 30 minutes</span><span>✓ Specific to your business</span><span>✓ No obligation</span>
+        </div>`),
+
+      ()=> fCard(`
+        ${fEyebrow('Revenue Leakage Audit')}
+        ${fH2('Pick a time. We stop the leaks together.')}
+        ${fSub('30 minutes. We find your biggest leak and give you the clear next step — whether we work together or not.')}
+        <div class="rounded-2xl overflow-hidden border border-primary/20 bg-surface-container-low" style="min-height:660px" id="calendar-container">
+          <iframe src="https://crm.crescaos.com/widget/booking/OlqdoFrT1sgJ3f2nnaIa" style="width: 100%;border:none;overflow: hidden;" scrolling="no" id="OlqdoFrT1sgJ3f2nnaIa_lm"></iframe>
+        </div>`)
+    ];
+
+    let _lmSent=false;
+    function checklistSubmit(){
+      const name=document.getElementById('lm-name').value.trim();
+      const email=document.getElementById('lm-email').value.trim();
+      const phone=document.getElementById('lm-phone').value.trim();
+      if(!name||!email){alert('Please enter your name and email.');return;}
+      diagnosticState.firstName=name; diagnosticState.email=email; diagnosticState.phone=phone;
+      if(!_lmSent){
+        _lmSent=true;
+        const payload={
+          source:'Lead Magnet - Revenue Leak Checklist',
+          offer:'revenue-leak-checklist',
+          tags:['lead-magnet-revenue-leak-checklist'],
+          name:name, email:email, phone:phone,
+          language: LANG,
+          utm_source: diagnosticState.utm_source,
+          utm_medium: diagnosticState.utm_medium,
+          utm_campaign: diagnosticState.utm_campaign,
+          utm_content: diagnosticState.utm_content,
+          utm_term: diagnosticState.utm_term,
+          source_page: diagnosticState.source_page,
+          referrer: diagnosticState.referrer,
+          landing_page: diagnosticState.landing_page
+        };
+        fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(()=>{});
+        if(window.dataLayer){
+          window.dataLayer.push({event:'lead_magnet_submit', offer:'revenue-leak-checklist', language:LANG, page:'diagnostic'});
+        }
+      }
+      goTo(3);
+    }
+
     let currentStep=1;
 
     function handleStep10Script() {
@@ -437,17 +514,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     function render(step){
       const el=document.getElementById('funnel');
-      el.innerHTML=STEPS[step-1]();
+      const steps = CHECKLIST_MODE ? CHECKLIST_STEPS : STEPS;
+      el.innerHTML=steps[step-1]();
       el.classList.remove('animate-fade-in'); void el.offsetWidth; el.classList.add('animate-fade-in');
       updateProgress(step);
-      if(step === 10) handleStep10Script();
+      if(step === 10 || (CHECKLIST_MODE && step === 4)) handleStep10Script();
       window.scrollTo({top:0,behavior:'smooth'});
-      CrescaTrack.stepCompleted(step,'step_'+step);
+      if(window.CrescaTrack) CrescaTrack.stepCompleted(step, (CHECKLIST_MODE?'lm_step_':'step_')+step);
     }
 
     function updateProgress(step){
       const wrap=document.getElementById('prog-wrap');
-      if(step===1){wrap.classList.add('hidden');return;}
+      if(step===1 || CHECKLIST_MODE){wrap.classList.add('hidden');return;}
       wrap.classList.remove('hidden');
       const pct=Math.round(((step-1)/8)*100);
       document.getElementById('prog-bar').style.width=pct+'%';
@@ -456,17 +534,71 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       document.getElementById('prog-label').textContent='Step '+(step-1)+': '+(labels[step-1]||'');
     }
 
+    function getSubmissionId() {
+      let subId = sessionStorage.getItem('cresca_submission_id');
+      if (!subId) {
+        subId = 'sub_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        sessionStorage.setItem('cresca_submission_id', subId);
+      }
+      return subId;
+    }
+
     function goTo(step){ currentStep=step; render(step); }
 
+    let _step2Submitting = false;
     function nextStep(){
       if(currentStep===1){ CrescaTrack.funnelStart(); goTo(2); return; }
       if(currentStep===2){
+        if (_step2Submitting) return;
         const name=document.getElementById('f-name').value.trim();
         const email=document.getElementById('f-email').value.trim();
         const phone=document.getElementById('f-phone').value.trim();
         if(!name||!email||!phone){alert('Please complete all fields.');return;}
+
+        _step2Submitting = true;
+        const btn = document.getElementById('s2-cta');
+        if (btn) { btn.disabled = true; btn.style.opacity = '0.6'; }
+
         diagnosticState.firstName=name; diagnosticState.email=email; diagnosticState.phone=phone;
-        goTo(3); return;
+        const submissionId = getSubmissionId();
+
+        const partialPayload = {
+          submissionId,
+          funnelStatus: 'partial',
+          name: name,
+          email: email,
+          phone: phone,
+          language: LANG,
+          source: 'Diagnostic Funnel',
+          utm_source: diagnosticState.utm_source,
+          utm_medium: diagnosticState.utm_medium,
+          utm_campaign: diagnosticState.utm_campaign,
+          utm_content: diagnosticState.utm_content,
+          utm_term: diagnosticState.utm_term,
+          source_page: diagnosticState.source_page,
+          referrer: diagnosticState.referrer,
+          landing_page: diagnosticState.landing_page,
+          service: diagnosticState.service
+        };
+
+        fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(partialPayload)
+        }).then(res => {
+          _step2Submitting = false;
+          if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+          if (res.status >= 500) {
+            alert('We encountered a temporary connection issue. Please click Continue to try again.');
+          } else {
+            goTo(3);
+          }
+        }).catch(() => {
+          _step2Submitting = false;
+          if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+          goTo(3);
+        });
+        return;
       }
       if(currentStep===4){
         const biz=document.getElementById('cresca-biz-input').value.trim();
@@ -492,7 +624,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     let _sent=false;
     function sendDiagnosticData(){
       if(_sent) return; _sent=true;
+      const submissionId = getSubmissionId();
       const payload={
+        submissionId,
+        funnelStatus: 'completed',
         source:'Diagnostic Funnel',
         name: diagnosticState.firstName,
         email: diagnosticState.email,
@@ -519,7 +654,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         service: diagnosticState.service
       };
       fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-        .then(()=>CrescaTrack.webhookFired(diagnosticState.score))
+        .then(()=> {
+          if (window.CrescaTrack) CrescaTrack.webhookFired(diagnosticState.score);
+        })
         .catch(()=>{});
     }
 
@@ -609,7 +746,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 </p>
                 <div class="mt-6 pt-6 border-t border-[#45474b]/5">
                     <p class="font-sans text-[10px] text-[#8f9095] opacity-70 leading-relaxed max-w-2xl mx-auto uppercase tracking-tighter">
-                        31 Kirby Lane, Central Islip, NY 11550 <br>
+                        31 Kirby Lane, Central Islip, NY 11722 <br>
                         By providing your phone number, you agree to receive SMS communications from Cresca OS regarding your diagnostic results, appointment reminders, and related business growth services. Message and data rates may apply. Message frequency may vary. Reply STOP to opt out or HELP for help. Consent is not a condition of purchase. Mobile information will not be shared with third parties or affiliates for marketing or promotional purposes. View our <a href="/privacy" class="underline hover:text-white transition-colors">Privacy Policy</a> and <a href="/terms" class="underline hover:text-white transition-colors">Terms</a>.
                     </p>
                 </div>

@@ -219,8 +219,13 @@ const diagnosticState = {
   source_page: window.location.href,
   referrer: document.referrer || '',
   landing_page: sessionStorage.getItem('landing_page') || window.location.href,
-  service: urlParams.get('service') || ''
+  service: urlParams.get('service') || '',
+  offer: urlParams.get('offer') || ''
 };
+
+// Modo lead magnet: /es/diagnostic?offer=revenue-leak-checklist activa
+// un flujo corto de 2 pasos (entrega del checklist vía workflow de GHL).
+const CHECKLIST_MODE = diagnosticState.offer === 'revenue-leak-checklist';
 
 const TOTAL_STEPS = 10;
 
@@ -431,6 +436,78 @@ const STEPS = [
   }
 ];
 
+// ── Lead Magnet: Lista de 10 Puntos de Fugas de Ingresos (flujo corto) ────────
+const CHECKLIST_STEPS = [
+  ()=> fCard(`
+    ${fEyebrow('Descarga gratis — Lista de 10 Puntos de Fugas de Ingresos')}
+    ${fH2('Descubre dónde tu negocio está perdiendo ingresos.')}
+    ${fSub('10 revisiones rápidas de captura de leads, seguimiento y agendamiento. Ve dónde se están escapando prospectos, citas y oportunidades de seguimiento — en menos de 5 minutos.')}
+    <button onclick="goTo(2)" class="w-full mt-6 signature-texture text-white font-label font-bold py-4 rounded-xl text-sm uppercase tracking-widest hover:scale-[1.02] transition-transform shadow-lg shadow-primary/20">Recibir checklist gratis &rarr;</button>
+    <p class="text-center text-xs text-on-surface-variant mt-3 opacity-70">Gratis. Sin llamada de ventas obligatoria.</p>`),
+
+  ()=> fCard(`
+    ${fEyebrow('Ya casi')}
+    ${fH2('¿A dónde te enviamos tu checklist?')}
+    <div class="space-y-4">
+      <input id="lm-name" type="text" placeholder="Tu nombre" required
+        class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline-variant/20 px-0 py-3 text-white placeholder:text-outline focus:border-primary outline-none transition-colors"/>
+      <input id="lm-email" type="email" placeholder="Correo electrónico" required
+        class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline-variant/20 px-0 py-3 text-white placeholder:text-outline focus:border-primary outline-none transition-colors"/>
+      <input id="lm-phone" type="tel" placeholder="Teléfono (opcional)"
+        class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline-variant/20 px-0 py-3 text-white placeholder:text-outline focus:border-primary outline-none transition-colors"/>
+    </div>
+    <button onclick="checklistSubmit()" class="w-full mt-6 signature-texture text-white font-label font-bold py-4 rounded-xl text-sm uppercase tracking-widest hover:scale-[1.02] transition-transform shadow-lg shadow-primary/20">Enviarme el checklist &rarr;</button>`),
+
+  ()=> fCard(`
+    ${fEyebrow('¡Listo!')}
+    ${fH2('Tu checklist va en camino.')}
+    ${fSub('Revisa tu bandeja de entrada en los próximos minutos (y la carpeta de spam, por si acaso). Mientras tanto — ¿quieres ver exactamente cuántos ingresos está perdiendo tu negocio y qué arreglar primero?')}
+    <button onclick="goTo(4)" class="w-full mt-2 signature-texture text-white font-label font-bold py-4 rounded-xl text-sm uppercase tracking-widest hover:scale-[1.02] transition-transform shadow-lg shadow-primary/20">Reservar Auditoría de Fugas de Ingresos &rarr;</button>
+    <div class="flex justify-center gap-6 mt-4 text-xs text-on-surface-variant">
+      <span>✓ 30 minutos</span><span>✓ Específico para tu negocio</span><span>✓ Sin compromiso</span>
+    </div>`),
+
+  ()=> fCard(`
+    ${fEyebrow('Auditoría de Fugas de Ingresos')}
+    ${fH2('Elige un horario. Detenemos las fugas juntos.')}
+    ${fSub('30 minutos. Encontramos tu fuga más grande y te damos el siguiente paso claro — trabajemos juntos o no.')}
+    <div class="rounded-2xl overflow-hidden border border-primary/20 bg-surface-container-low" style="min-height:660px" id="calendar-container">
+      <iframe src="https://crm.crescaos.com/widget/booking/OlqdoFrT1sgJ3f2nnaIa" style="width: 100%;border:none;overflow: hidden;" scrolling="no" id="OlqdoFrT1sgJ3f2nnaIa_lm"></iframe>
+    </div>`)
+];
+
+let _lmSent=false;
+function checklistSubmit(){
+  const name=document.getElementById('lm-name').value.trim();
+  const email=document.getElementById('lm-email').value.trim();
+  const phone=document.getElementById('lm-phone').value.trim();
+  if(!name||!email){alert('Por favor ingresa tu nombre y correo electrónico.');return;}
+  diagnosticState.firstName=name; diagnosticState.email=email; diagnosticState.phone=phone;
+  if(!_lmSent){
+    _lmSent=true;
+    const payload={
+      source:'Lead Magnet - Revenue Leak Checklist',
+      offer:'revenue-leak-checklist',
+      tags:['lead-magnet-revenue-leak-checklist'],
+      name:name, email:email, phone:phone,
+      language: LANG,
+      utm_source: diagnosticState.utm_source,
+      utm_medium: diagnosticState.utm_medium,
+      utm_campaign: diagnosticState.utm_campaign,
+      utm_content: diagnosticState.utm_content,
+      utm_term: diagnosticState.utm_term,
+      source_page: diagnosticState.source_page,
+      referrer: diagnosticState.referrer,
+      landing_page: diagnosticState.landing_page
+    };
+    fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(()=>{});
+    if(window.dataLayer){
+      window.dataLayer.push({event:'lead_magnet_submit', offer:'revenue-leak-checklist', language:LANG, page:'diagnostic'});
+    }
+  }
+  goTo(3);
+}
+
 let currentStep=1;
 
 // Special handler for Step 10 to ensure script executes
@@ -447,36 +524,86 @@ function handleStep10Script() {
 
 function render(step){
   const el=document.getElementById('funnel');
-  el.innerHTML=STEPS[step-1]();
+  const steps = CHECKLIST_MODE ? CHECKLIST_STEPS : STEPS;
+  el.innerHTML=steps[step-1]();
   el.classList.remove('animate-fade-in'); void el.offsetWidth; el.classList.add('animate-fade-in');
   updateProgress(step);
-  if(step === 10) handleStep10Script();
+  if(step === 10 || (CHECKLIST_MODE && step === 4)) handleStep10Script();
   window.scrollTo({top:0,behavior:'smooth'});
-  CrescaTrack.stepCompleted(step,'step_'+step);
+  if(window.CrescaTrack) CrescaTrack.stepCompleted(step, (CHECKLIST_MODE?'lm_step_':'step_')+step);
 }
 
 function updateProgress(step){
   const wrap=document.getElementById('prog-wrap');
-  if(step===1){wrap.classList.add('hidden');return;}
-  wrap.classList.remove('hidden');
-  const pct=Math.round(((step-1)/8)*100);
-  document.getElementById('prog-bar').style.width=pct+'%';
-  document.getElementById('prog-pct').textContent=pct+'%';
   const labels=['','Contacto','Tipo de negocio','Nombre del negocio','Ingresos','Problema principal','Velocidad de respuesta','Calculando...','Tu diagn&oacute;stico','Agendar'];
   document.getElementById('prog-label').textContent='Paso '+(step-1)+': '+(labels[step-1]||'');
 }
 
+function getSubmissionId() {
+  let subId = sessionStorage.getItem('cresca_submission_id');
+  if (!subId) {
+    subId = 'sub_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    sessionStorage.setItem('cresca_submission_id', subId);
+  }
+  return subId;
+}
+
 function goTo(step){ currentStep=step; render(step); }
 
+let _step2Submitting = false;
 function nextStep(){
   if(currentStep===1){ CrescaTrack.funnelStart(); goTo(2); return; }
   if(currentStep===2){
+    if (_step2Submitting) return;
     const name=document.getElementById('f-name').value.trim();
     const email=document.getElementById('f-email').value.trim();
     const phone=document.getElementById('f-phone').value.trim();
     if(!name||!email||!phone){alert('Por favor completa todos los campos.');return;}
+
+    _step2Submitting = true;
+    const btn = document.getElementById('s2-cta');
+    if (btn) { btn.disabled = true; btn.style.opacity = '0.6'; }
+
     diagnosticState.firstName=name; diagnosticState.email=email; diagnosticState.phone=phone;
-    goTo(3); return;
+    const submissionId = getSubmissionId();
+
+    const partialPayload = {
+      submissionId,
+      funnelStatus: 'partial',
+      name: name,
+      email: email,
+      phone: phone,
+      language: LANG,
+      source: 'Diagnostic Funnel',
+      utm_source: diagnosticState.utm_source,
+      utm_medium: diagnosticState.utm_medium,
+      utm_campaign: diagnosticState.utm_campaign,
+      utm_content: diagnosticState.utm_content,
+      utm_term: diagnosticState.utm_term,
+      source_page: diagnosticState.source_page,
+      referrer: diagnosticState.referrer,
+      landing_page: diagnosticState.landing_page,
+      service: diagnosticState.service
+    };
+
+    fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(partialPayload)
+    }).then(res => {
+      _step2Submitting = false;
+      if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+      if (res.status >= 500) {
+        alert('Tuvimos un problema temporal de conexión. Por favor presiona Continuar para reintentar.');
+      } else {
+        goTo(3);
+      }
+    }).catch(() => {
+      _step2Submitting = false;
+      if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+      goTo(3);
+    });
+    return;
   }
   if(currentStep===4){
     const biz=document.getElementById('cresca-biz-input').value.trim();
@@ -502,7 +629,10 @@ function pickOption(el){
 let _sent=false;
 function sendDiagnosticData(){
   if(_sent) return; _sent=true;
+  const submissionId = getSubmissionId();
   const payload={
+    submissionId,
+    funnelStatus: 'completed',
     source:'Diagnostic Funnel',
     name: diagnosticState.firstName,
     email: diagnosticState.email,
@@ -529,11 +659,10 @@ function sendDiagnosticData(){
     service: diagnosticState.service
   };
   fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-    .then(()=>CrescaTrack.webhookFired(diagnosticState.score))
+    .then(()=> {
+      if (window.CrescaTrack) CrescaTrack.webhookFired(diagnosticState.score);
+    })
     .catch(()=>{});
-}
-
-document.addEventListener('DOMContentLoaded',()=>{ render(1); });
 
 </script>
 
@@ -619,7 +748,7 @@ document.addEventListener('DOMContentLoaded',()=>{ render(1); });
                 </p>
                 <div class="mt-6 pt-6 border-t border-[#45474b]/5">
                     <p class="font-sans text-[10px] text-[#8f9095] opacity-70 leading-relaxed max-w-2xl mx-auto uppercase tracking-tighter">
-                        31 Kirby Lane, Central Islip, NY 11550 <br>
+                        31 Kirby Lane, Central Islip, NY 11722 <br>
                         Al proporcionar su n&uacute;mero de tel&eacute;fono, acepta recibir comunicaciones por SMS de Cresca OS sobre los resultados de su diagn&oacute;stico, recordatorios de citas y servicios relacionados con el crecimiento de su negocio. Pueden aplicarse tarifas de mensajes y datos. La frecuencia de los mensajes puede variar. Responda STOP para cancelar o HELP para recibir ayuda. El consentimiento no es una condici&oacute;n de compra. La informaci&oacute;n m&oacute;vil no se compartir&aacute;&aacute; con terceros o afiliados con fines de marketing o promoci&oacute;n. Consulte nuestra <a href="/es/privacy" class="underline hover:text-white transition-colors">Pol&iacute;tica de Privacidad</a> y nuestros <a href="/es/terms" class="underline hover:text-white transition-colors">T&eacute;rminos</a>.
                     </p>
                 </div>

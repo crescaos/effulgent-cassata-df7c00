@@ -28,6 +28,8 @@
     <meta property="og:url" content="https://crescaos.com/es/start">
     <meta property="og:title" content="Comenzar Aquí | Roberto Alas & Cresca OS">
     <meta property="og:description" content="Accede a servicios de automatización de negocios, limpieza, capacitación de ventas, sitios web, consultoría y ejemplos de proyectos en un solo lugar.">
+    <!-- TODO: Reemplazar og:image con una tarjeta social con foto del fundador — "Roberto Alas — Systems for Service Businesses"
+         (branding Cresca OS, 1200x630). Se mantiene el logo actual hasta tener el nuevo asset. -->
     <meta property="og:image" content="https://crescaos.com/logo-preview.png">
 
     <!-- Twitter -->
@@ -48,7 +50,7 @@
                 outline-offset: 4px;
             }
         }
-        
+
         .signature-texture {
             background: linear-gradient(135deg, #0A84FF 0%, #00E68A 100%);
         }
@@ -61,7 +63,17 @@
             box-shadow: 0 0 20px rgba(0, 230, 138, 0.2);
             border-color: rgba(0, 230, 138, 0.3);
         }
-        
+
+        /* Protección de íconos: ocultar el texto crudo (ej. "settings_suggest") hasta confirmar que la fuente cargó */
+        .material-symbols-outlined { visibility: hidden; }
+        .icons-ready .material-symbols-outlined { visibility: visible; }
+
+        /* Resaltado breve cuando un botón de segmentación lleva a una tarjeta */
+        .card-highlight {
+            box-shadow: 0 0 0 2px rgba(0, 230, 138, 0.6), 0 0 24px rgba(0, 230, 138, 0.25);
+            transition: box-shadow 0.3s ease;
+        }
+
         #neural-bg {
             position: fixed;
             top: 0;
@@ -129,7 +141,7 @@
             </a>
             <div>
                 <a href="/start" data-lang-switch="en" class="flex items-center gap-1 text-[#00E68A] font-label text-xs hover:text-[#dae2fd] transition-colors font-bold border border-[#00E68A]/30 rounded-full px-3 py-1.5 bg-[#00E68A]/5">
-                    <span class="material-symbols-outlined text-[16px]">language</span> EN
+                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">language</span> EN
                 </a>
             </div>
         </div>
@@ -139,17 +151,22 @@
     <main class="flex-1 w-full max-w-2xl mx-auto px-5 pt-24 pb-16 relative z-10">
         <!-- Hero Section -->
         <header class="text-center py-8 md:py-12">
-            <!-- Avatar/Logo Icon -->
+            <!-- Avatar/Logo (SVG de marca — sin dependencia de la fuente de íconos, evita el texto "token") -->
             <div class="w-16 h-16 mx-auto mb-6 rounded-2xl signature-texture p-0.5 shadow-lg shadow-primary/25 flex items-center justify-center">
                 <div class="w-full h-full bg-[#0F172A] rounded-2xl flex items-center justify-center">
-                    <span class="material-symbols-outlined text-white text-3xl">token</span>
+                    <svg class="w-9 h-9" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <circle cx="24" cy="24" r="18" stroke="#0A84FF" stroke-width="3"></circle>
+                        <ellipse cx="24" cy="24" rx="13" ry="7.5" stroke="#00E68A" stroke-width="3" transform="rotate(60 24 24)"></ellipse>
+                        <ellipse cx="24" cy="24" rx="13" ry="7.5" stroke="#00E68A" stroke-width="3" transform="rotate(-60 24 24)"></ellipse>
+                        <circle cx="24" cy="24" fill="#FFFFFF" r="3.5"></circle>
+                    </svg>
                 </div>
             </div>
-            
+
             <h1 class="font-headline text-3xl sm:text-4xl font-bold text-white leading-tight tracking-tight mb-4">
                 Construye Sistemas. Agenda Más.<br><span class="text-brand-green italic">Escala Inteligente.</span>
             </h1>
-            
+
             <p class="font-body text-base text-on-surface-variant max-w-md mx-auto mb-3 leading-relaxed font-light">
                 Elige el servicio que se adapte a tus necesidades: automatización de negocios, servicios de limpieza, capacitación de ventas, sitios web o consultoría.
             </p>
@@ -157,14 +174,19 @@
             <p class="font-body text-xs text-[#00E68A] max-w-md mx-auto mb-4 font-semibold">
                 Para dueños de negocio, equipos de venta, fundadores y propietarios que buscan sistemas, servicios o apoyo.
             </p>
-            
-            <p class="font-label text-[11px] uppercase tracking-wider text-[#8f9095] max-w-xs mx-auto mb-8 leading-relaxed">
+
+            <p class="font-label text-[11px] uppercase tracking-wider text-[#8f9095] max-w-xs mx-auto mb-4 leading-relaxed">
                 Creado por Roberto Alas — fundador de Cresca OS, creador de SeptiVolt y operador de sistemas de crecimiento para empresas de servicios.
+            </p>
+
+            <!-- Línea de prueba social -->
+            <p class="font-body text-sm text-white/90 max-w-md mx-auto mb-8 leading-relaxed inline-block border border-brand-green/20 bg-brand-green/5 rounded-full px-5 py-2">
+                <span class="text-brand-green font-semibold">Más de 20 sistemas creados</span> en solar, limpieza, servicios para el hogar, CRM, automatización, páginas web y entrenamiento de ventas.
             </p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center w-full px-2 mb-10">
                 <a class="signature-texture text-white px-8 py-3.5 rounded-xl font-label font-bold tracking-wider text-xs uppercase shadow-lg shadow-brand-green/15 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 w-full sm:w-auto text-center" href="/es/diagnostic?source=start-page&service=audit">
-                    Reservar Auditoría de Negocios
+                    Auditoría de Fugas de Ingresos
                 </a>
                 <a class="bg-surface-container-high border border-outline-variant/30 text-white px-8 py-3.5 rounded-xl font-label font-bold tracking-wider text-xs uppercase hover:bg-surface-bright hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 w-full sm:w-auto text-center" href="#services">
                     Ver Todos los Servicios
@@ -172,51 +194,58 @@
             </div>
         </header>
 
-        <!-- Service Cards Section -->
+        <!-- Bloque de Auto-Segmentación -->
+        <section aria-labelledby="segment-heading" class="mb-12">
+            <h2 id="segment-heading" class="font-headline text-xl sm:text-2xl font-bold text-white text-center mb-2">¿Qué estás buscando?</h2>
+            <p class="font-body text-sm text-[#c6c6cb] text-center mb-6 font-light max-w-md mx-auto">
+                Elige el camino que mejor se ajuste a lo que necesitas y te llevo al siguiente paso correcto.
+            </p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <button type="button" data-segment="business-systems" data-target="card-cresca-os"
+                        class="bg-surface-container-high border border-outline-variant/30 text-white px-4 py-2.5 rounded-xl font-label text-xs font-bold uppercase tracking-wider hover:bg-surface-bright hover:border-brand-green/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary transition-all cursor-pointer">
+                    Necesito sistemas / automatización para mi negocio
+                </button>
+                <button type="button" data-segment="sales-training" data-target="card-septivolt"
+                        class="bg-surface-container-high border border-outline-variant/30 text-white px-4 py-2.5 rounded-xl font-label text-xs font-bold uppercase tracking-wider hover:bg-surface-bright hover:border-brand-green/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary transition-all cursor-pointer">
+                    Necesito entrenamiento de ventas
+                </button>
+                <button type="button" data-segment="custom-build" data-target="card-custom-build"
+                        class="bg-surface-container-high border border-outline-variant/30 text-white px-4 py-2.5 rounded-xl font-label text-xs font-bold uppercase tracking-wider hover:bg-surface-bright hover:border-brand-green/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary transition-all cursor-pointer">
+                    Necesito una página web o sistema personalizado
+                </button>
+                <button type="button" data-segment="cleaning" data-target="card-gg-cleaning"
+                        class="bg-surface-container-high border border-outline-variant/30 text-white px-4 py-2.5 rounded-xl font-label text-xs font-bold uppercase tracking-wider hover:bg-surface-bright hover:border-brand-green/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary transition-all cursor-pointer">
+                    Necesito servicios de limpieza
+                </button>
+                <button type="button" data-segment="coaching" data-target="card-life-architect"
+                        class="bg-surface-container-high border border-outline-variant/30 text-white px-4 py-2.5 rounded-xl font-label text-xs font-bold uppercase tracking-wider hover:bg-surface-bright hover:border-brand-green/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary transition-all cursor-pointer">
+                    Quiero coaching personal
+                </button>
+            </div>
+        </section>
+
+        <!-- Sección de Tarjetas de Servicios (ordenadas por prioridad de ingresos y estrategia) -->
         <section id="services" class="space-y-4 md:space-y-6 scroll-mt-20">
 
-            <!-- Card 0: Arquitecto de Vida — Portal de Marca Personal -->
-            <a href="/es/life-architect" 
-               data-service="life-architect" 
-               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group relative overflow-hidden"
-               style="border: 1px solid rgba(201, 168, 76, 0.15);">
-                <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(rgba(201,168,76,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,0.3) 1px, transparent 1px); background-size: 40px 40px;"></div>
-                <div class="flex items-start gap-4 relative z-10">
-                    <div class="p-3 rounded-xl" style="background: rgba(201, 168, 76, 0.1); color: #C9A84C;">
-                        <span class="material-symbols-outlined text-2xl">architecture</span>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h2 class="font-headline text-lg font-bold text-white transition-colors flex items-center gap-1.5" style="group-hover:color: #C9A84C;">
-                            Roberto Alas — Arquitecto de Vida
-                        </h2>
-                        <p class="font-body text-sm mt-1 mb-4 leading-relaxed font-light italic" style="color: #C9A84C;">
-                            Diseñado con Intención. No por Defecto.
-                        </p>
-                        <p class="font-body text-sm text-[#c6c6cb] mb-4 leading-relaxed font-light">
-                            Mentalidad, disciplina, comunicación, ventas, sistemas y dominio personal — para hombres ambiciosos y emprendedores que construyen su vida con intención.
-                        </p>
-                        <span class="inline-flex items-center gap-1 font-label text-[10px] font-bold uppercase tracking-widest rounded-full px-3 py-1" style="color: #C9A84C; background: rgba(201, 168, 76, 0.05); border: 1px solid rgba(201, 168, 76, 0.2);">
-                            Explorar Arquitectura de Vida &rarr;
-                        </span>
-                    </div>
-                </div>
-            </a>
-            
-            <!-- Card 1: Cresca OS -->
-            <a href="/es/diagnostic?source=start-page&service=cresca-os" 
-               data-service="cresca-os" 
-               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group">
+            <!-- Tarjeta 1: Cresca OS -->
+            <a href="/es/diagnostic?source=start-page&service=cresca-os"
+               id="card-cresca-os"
+               data-service="cresca-os"
+               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group scroll-mt-24">
                 <div class="flex items-start gap-4">
                     <div class="p-3 bg-[#0A84FF]/10 rounded-xl text-[#0A84FF] group-hover:bg-[#0A84FF]/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl">settings_suggest</span>
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">settings_suggest</span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-[#0A84FF] transition-colors flex items-center gap-1.5">
+                        <p class="font-label text-[10px] font-bold uppercase tracking-widest text-[#0A84FF] mb-1 flex items-center gap-1.5">
                             Cresca OS — Infraestructura de Ingresos
-                            <span class="material-symbols-outlined text-sm text-[#00E68A] animate-pulse">check_circle</span>
+                            <span class="material-symbols-outlined text-sm text-[#00E68A] animate-pulse" aria-hidden="true">check_circle</span>
+                        </p>
+                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-[#0A84FF] transition-colors">
+                            Deja de perder los leads que ya pagaste.
                         </h2>
                         <p class="font-body text-sm text-[#c6c6cb] mt-2 mb-4 leading-relaxed font-light">
-                            Para dueños de negocios que necesitan mejor captura de leads, seguimiento más rápido, automatización de CRM, agenda de citas y visibilidad completa de su pipeline.
+                            Captura de leads, seguimiento rápido, automatización de CRM, agenda de citas y visibilidad completa del pipeline — para que cada oportunidad se trabaje, no se pierda.
                         </p>
                         <span class="inline-flex items-center gap-1 font-label text-[10px] font-bold text-brand-green uppercase tracking-widest bg-brand-green/5 border border-brand-green/20 rounded-full px-3 py-1">
                             Reservar Auditoría de Fugas de Ingresos &rarr;
@@ -225,70 +254,53 @@
                 </div>
             </a>
 
-            <!-- Card 2: G&G Cleaning -->
-            <a href="https://ggcleaningli.com?utm_source=cresca_start&utm_medium=link_hub&utm_campaign=roberto_services" 
-               data-service="gg-cleaning" 
-               target="_blank" 
+            <!-- Tarjeta 2: SeptiVolt -->
+            <a href="https://septivolt.com?utm_source=cresca_start&utm_medium=link_hub&utm_campaign=roberto_services"
+               id="card-septivolt"
+               data-service="septivolt"
+               target="_blank"
                rel="noopener"
-               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group">
-                <div class="flex items-start gap-4">
-                    <div class="p-3 bg-[#00E68A]/10 rounded-xl text-[#00E68A] group-hover:bg-[#00E68A]/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl">cleaning_services</span>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-brand-green transition-colors flex items-center gap-1">
-                            G&G Cleaning Services — Long Island
-                            <span class="material-symbols-outlined text-sm opacity-55">open_in_new</span>
-                        </h2>
-                        <p class="font-body text-sm text-[#c6c6cb] mt-2 mb-4 leading-relaxed font-light">
-                            Servicios de limpieza residencial, comercial, profunda, de mudanza y post-construcción en los condados de Nassau y Suffolk.
-                        </p>
-                        <span class="inline-flex items-center gap-1 font-label text-[10px] font-bold text-[#0A84FF] uppercase tracking-widest bg-[#0A84FF]/5 border border-[#0A84FF]/20 rounded-full px-3 py-1">
-                            Obtener Cotización de Limpieza &rarr;
-                        </span>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Card 3: SeptiVolt -->
-            <a href="https://septivolt.com?utm_source=cresca_start&utm_medium=link_hub&utm_campaign=roberto_services" 
-               data-service="septivolt" 
-               target="_blank" 
-               rel="noopener"
-               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group">
+               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group scroll-mt-24">
                 <div class="flex items-start gap-4">
                     <div class="p-3 bg-[#0A84FF]/10 rounded-xl text-[#0A84FF] group-hover:bg-[#0A84FF]/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl">interactive_space</span>
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">interactive_space</span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-[#0A84FF] transition-colors flex items-center gap-1">
+                        <p class="font-label text-[10px] font-bold uppercase tracking-widest text-[#0A84FF] mb-1 flex items-center gap-1">
                             SeptiVolt — Ventas Solar y Servicios
-                            <span class="material-symbols-outlined text-sm opacity-55">open_in_new</span>
+                            <span class="material-symbols-outlined text-sm opacity-55" aria-hidden="true">open_in_new</span>
+                        </p>
+                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-[#0A84FF] transition-colors">
+                            Entrena a tus vendedores más rápido con roleplay y calificación con IA.
                         </h2>
                         <p class="font-body text-sm text-[#c6c6cb] mt-2 mb-4 leading-relaxed font-light">
-                            Onboarding con IA, simulación de juegos de rol, capacitación de ventas, calificación de representantes y visibilidad para gerentes de equipos solares y del hogar.
+                            Onboarding, simulaciones de roleplay, calificación de representantes y visibilidad para gerentes de equipos de ventas solares y de servicios del hogar.
                         </p>
                         <span class="inline-flex items-center gap-1 font-label text-[10px] font-bold text-brand-green uppercase tracking-widest bg-brand-green/5 border border-brand-green/20 rounded-full px-3 py-1">
-                            Reservar Demo de SeptiVolt &rarr;
+                            Agendar demo de SeptiVolt &rarr;
                         </span>
                     </div>
                 </div>
             </a>
 
-            <!-- Card 4: Custom Websites + AI Automation -->
-            <a href="/es/custom-build" 
-               data-service="custom-build" 
-               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group">
+            <!-- Tarjeta 3: Sitios Web + Automatización con IA -->
+            <a href="/es/custom-build"
+               id="card-custom-build"
+               data-service="custom-build"
+               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group scroll-mt-24">
                 <div class="flex items-start gap-4">
                     <div class="p-3 bg-[#00E68A]/10 rounded-xl text-[#00E68A] group-hover:bg-[#00E68A]/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl">hub</span>
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">hub</span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-brand-green transition-colors">
+                        <p class="font-label text-[10px] font-bold uppercase tracking-widest text-[#00E68A] mb-1">
                             Sitios Web + Automatización con IA
+                        </p>
+                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-brand-green transition-colors">
+                            Convierte tu sitio web, CRM, formularios, pagos y automatizaciones en un solo sistema conectado.
                         </h2>
                         <p class="font-body text-sm text-[#c6c6cb] mt-2 mb-4 leading-relaxed font-light">
-                            ¿Necesitas un sitio web, embudo de ventas, CRM, flujo de reservas, chatbot, pasarela con Stripe o app interna personalizada? Construyo sistemas que te ayudan a vender más.
+                            Sitios web, embudos de venta, chatbots, cobros con Stripe, CRM, flujos de reservas, herramientas internas y automatización — construidos para captar y cerrar más oportunidades.
                         </p>
                         <span class="inline-flex items-center gap-1 font-label text-[10px] font-bold text-[#0A84FF] uppercase tracking-widest bg-[#0A84FF]/5 border border-[#0A84FF]/20 rounded-full px-3 py-1">
                             Solicitar Desarrollo Personalizado &rarr;
@@ -297,35 +309,69 @@
                 </div>
             </a>
 
-            <!-- Card 5: Work Directly With Roberto -->
-            <a href="/es/diagnostic?source=start-page&service=consulting" 
-               data-service="consulting" 
-               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group">
+            <!-- Tarjeta 4: Trabaja Directamente con Roberto -->
+            <a href="/es/diagnostic?source=start-page&service=consulting"
+               id="card-consulting"
+               data-service="consulting"
+               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group scroll-mt-24">
                 <div class="flex items-start gap-4">
                     <div class="p-3 bg-[#0A84FF]/10 rounded-xl text-[#0A84FF] group-hover:bg-[#0A84FF]/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl">support_agent</span>
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">support_agent</span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-[#0A84FF] transition-colors">
+                        <p class="font-label text-[10px] font-bold uppercase tracking-widest text-[#0A84FF] mb-1">
                             Trabaja Directamente con Roberto
+                        </p>
+                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-[#0A84FF] transition-colors">
+                            Ayuda directa para organizar tu oferta, sistemas y proceso de ventas.
                         </h2>
                         <p class="font-body text-sm text-[#c6c6cb] mt-2 mb-4 leading-relaxed font-light">
-                            Para fundadores, operadores y dueños de empresas de servicios que necesitan ayuda para organizar su oferta, sistemas, proceso de ventas o estrategia.
+                            Para fundadores, operadores y dueños de empresas de servicios que necesitan ayuda con su oferta, sistemas, proceso de ventas, sitio web o estrategia de crecimiento.
                         </p>
                         <span class="inline-flex items-center gap-1 font-label text-[10px] font-bold text-brand-green uppercase tracking-widest bg-brand-green/5 border border-brand-green/20 rounded-full px-3 py-1">
-                            Reservar Llamada de Estrategia &rarr;
+                            Auditoría de Fugas de Ingresos &rarr;
                         </span>
                     </div>
                 </div>
             </a>
 
-            <!-- Card 6: See What I'm Building -->
-            <a href="/es/projects" 
-               data-service="projects" 
-               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group">
+            <!-- Tarjeta 5: G&G Cleaning -->
+            <a href="https://ggcleaningli.com?utm_source=cresca_start&utm_medium=link_hub&utm_campaign=roberto_services"
+               id="card-gg-cleaning"
+               data-service="gg-cleaning"
+               target="_blank"
+               rel="noopener"
+               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group scroll-mt-24">
                 <div class="flex items-start gap-4">
                     <div class="p-3 bg-[#00E68A]/10 rounded-xl text-[#00E68A] group-hover:bg-[#00E68A]/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl">deployed_code</span>
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">cleaning_services</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-label text-[10px] font-bold uppercase tracking-widest text-[#00E68A] mb-1 flex items-center gap-1">
+                            G&G Cleaning Services — Long Island
+                            <span class="material-symbols-outlined text-sm opacity-55" aria-hidden="true">open_in_new</span>
+                        </p>
+                        <h2 class="font-headline text-lg font-bold text-white group-hover:text-brand-green transition-colors">
+                            Servicios de limpieza profesional para hogares y negocios en Long Island.
+                        </h2>
+                        <p class="font-body text-sm text-[#c6c6cb] mt-2 mb-4 leading-relaxed font-light">
+                            Limpieza residencial, comercial, profunda, de mudanza (move-in/move-out) y post-construcción en los condados de Nassau y Suffolk.
+                        </p>
+                        <span class="inline-flex items-center gap-1 font-label text-[10px] font-bold text-[#0A84FF] uppercase tracking-widest bg-[#0A84FF]/5 border border-[#0A84FF]/20 rounded-full px-3 py-1">
+                            Solicitar cotización de limpieza &rarr;
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Tarjeta 6: Mira lo que Estoy Construyendo -->
+            <a href="/es/projects"
+               id="card-projects"
+               data-service="projects"
+               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group scroll-mt-24">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 bg-[#00E68A]/10 rounded-xl text-[#00E68A] group-hover:bg-[#00E68A]/20 transition-colors">
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">deployed_code</span>
                     </div>
                     <div class="flex-1 min-w-0">
                         <h2 class="font-headline text-lg font-bold text-white group-hover:text-brand-green transition-colors">
@@ -336,6 +382,37 @@
                         </p>
                         <span class="inline-flex items-center gap-1 font-label text-[10px] font-bold text-[#0A84FF] uppercase tracking-widest bg-[#0A84FF]/5 border border-[#0A84FF]/20 rounded-full px-3 py-1">
                             Ver Proyectos del Portafolio &rarr;
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Tarjeta 7: Arquitecto de Vida — Crecimiento Personal y Coaching -->
+            <a href="/es/life-architect"
+               id="card-life-architect"
+               data-service="life-architect"
+               class="accessible-card block p-6 rounded-2xl glass-card hover:bg-[#171f33]/80 glow-pulse transition-all duration-300 transform hover:-translate-y-0.5 group relative overflow-hidden scroll-mt-24"
+               style="border: 1px solid rgba(201, 168, 76, 0.15);">
+                <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(rgba(201,168,76,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,0.3) 1px, transparent 1px); background-size: 40px 40px;"></div>
+                <div class="flex items-start gap-4 relative z-10">
+                    <div class="p-3 rounded-xl" style="background: rgba(201, 168, 76, 0.1); color: #C9A84C;">
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">architecture</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-label text-[10px] font-bold uppercase tracking-widest mb-1" style="color: #C9A84C;">
+                            Roberto Alas — Arquitecto de Vida
+                        </p>
+                        <h2 class="font-headline text-lg font-bold text-white transition-colors">
+                            Crecimiento personal, disciplina, comunicación y sistemas de vida.
+                        </h2>
+                        <p class="font-body text-sm mt-1 mb-2 leading-relaxed font-light italic" style="color: #C9A84C;">
+                            Diseñado con Intención. No por Defecto.
+                        </p>
+                        <p class="font-body text-sm text-[#c6c6cb] mb-4 leading-relaxed font-light">
+                            Coaching para personas que quieren reconstruir su identidad, hábitos, confianza y ejecución — con intención, no por defecto.
+                        </p>
+                        <span class="inline-flex items-center gap-1 font-label text-[10px] font-bold uppercase tracking-widest rounded-full px-3 py-1" style="color: #C9A84C; background: rgba(201, 168, 76, 0.05); border: 1px solid rgba(201, 168, 76, 0.2);">
+                            Explorar Arquitectura de Vida &rarr;
                         </span>
                     </div>
                 </div>
@@ -354,9 +431,20 @@
                     info@crescaos.com
                 </a>
                 <a class="signature-texture text-white px-6 py-2.5 rounded-xl font-label font-bold text-xs uppercase shadow-md shadow-primary/10 hover:scale-[1.02] transition-all w-full sm:w-auto text-center" href="/es/diagnostic?source=start-page&service=audit">
-                    Reservar Auditoría
+                    Auditoría de Fugas de Ingresos
                 </a>
             </div>
+        </section>
+
+        <!-- Sección de Lead Magnet (captura de baja fricción) -->
+        <section class="mt-8 p-8 rounded-[2rem] border border-[#0A84FF]/15 bg-[#0A84FF]/5 backdrop-blur-md text-center max-w-xl mx-auto">
+            <h3 class="font-headline text-xl font-bold text-white mb-2">¿Todavía no estás listo para agendar?</h3>
+            <p class="font-body text-sm text-[#c6c6cb] mb-6 font-light leading-relaxed">
+                Recibe gratis la lista de 10 puntos para detectar fugas de ingresos y ver dónde tu negocio puede estar perdiendo prospectos, citas y oportunidades de seguimiento.
+            </p>
+            <a data-service="revenue-leak-checklist" class="signature-texture text-white px-8 py-3 rounded-xl font-label font-bold tracking-wider text-xs uppercase shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all inline-block" href="/es/diagnostic?source=start-page&offer=revenue-leak-checklist&language=es">
+                Recibir checklist gratis
+            </a>
         </section>
 
         <!-- Footer Section -->
@@ -367,7 +455,7 @@
                     Comienza con una auditoría rápida de tu negocio y te guiaré hacia el sistema, servicio o siguiente paso correcto.
                 </p>
                 <a class="signature-texture text-white px-8 py-3 rounded-xl font-label font-bold tracking-wider text-xs uppercase shadow-lg shadow-brand-green/20 hover:scale-[1.02] transition-all inline-block" href="/es/diagnostic?source=start-page&service=audit">
-                    Reservar Auditoría
+                    Auditoría de Fugas de Ingresos
                 </a>
             </div>
             <p class="text-[11px] font-label text-[#8f9095]">
@@ -379,6 +467,20 @@
     <!-- Scripts -->
     <script src="/js/language-manager.js"></script>
     <script>
+        // Protección de fuente de íconos: mostrar Material Symbols solo cuando la fuente esté cargada,
+        // para que los nombres crudos ("settings_suggest", "architecture", etc.) nunca aparezcan como texto.
+        (function () {
+            if (document.fonts && document.fonts.load) {
+                document.fonts.load('24px "Material Symbols Outlined"').then(function () {
+                    if (document.fonts.check('24px "Material Symbols Outlined"')) {
+                        document.documentElement.classList.add('icons-ready');
+                    }
+                }).catch(function () { /* los íconos quedan ocultos (decorativos) si la fuente falla */ });
+            } else {
+                document.documentElement.classList.add('icons-ready');
+            }
+        })();
+
         // Interactive Particle Network Background
         window.addEventListener('DOMContentLoaded', () => {
             const canvas = document.getElementById('neural-bg');
@@ -427,7 +529,7 @@
 
             function animate() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
+
                 for (let i = 0; i < particles.length; i++) {
                     particles[i].update();
                     particles[i].draw();
@@ -451,7 +553,7 @@
             }
             animate();
 
-            // Track Clicks dynamically (for GTM dataLayer integration)
+            // Registro de clics en tarjetas (integración GTM dataLayer)
             const cards = document.querySelectorAll('a[data-service]');
             cards.forEach(card => {
                 card.addEventListener('click', function(e) {
@@ -464,6 +566,32 @@
                             language: "es",
                             page: "start"
                         });
+                    }
+                });
+            });
+
+            // Router de segmentación: evento GTM + scroll suave a la tarjeta correspondiente
+            const segmentButtons = document.querySelectorAll('button[data-segment]');
+            segmentButtons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const segment = this.getAttribute('data-segment');
+                    const targetId = this.getAttribute('data-target');
+
+                    if (window.dataLayer) {
+                        window.dataLayer.push({
+                            event: "link_hub_segment_click",
+                            segment: segment,
+                            language: "es",
+                            page: "start"
+                        });
+                    }
+
+                    const target = document.getElementById(targetId);
+                    if (target) {
+                        target.scrollIntoView({ behavior: "smooth", block: "center" });
+                        target.classList.add('card-highlight');
+                        setTimeout(() => target.classList.remove('card-highlight'), 1800);
+                        target.focus({ preventScroll: true });
                     }
                 });
             });

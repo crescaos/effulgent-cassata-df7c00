@@ -1,3 +1,7 @@
+/**
+ * LEGACY / NON-PRODUCTION HANDLER
+ * Note: Production `/api/webhook` is owned and handled strictly by `CRESCAOS-WEB-BACKEND/server.js` on Railway.
+ */
 // api/lead.js
 const logger = require('../utils/logger');
 const { evaluateLead } = require('../utils/scoringModel');
